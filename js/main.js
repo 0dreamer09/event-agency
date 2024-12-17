@@ -1,19 +1,20 @@
+let clients = []; // Глобальный массив для клиентов
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Загружаем данные клиентов из JSON
     fetch("data/clients.json")
         .then(response => response.json())
-        .then(data => loadClients(data))
+        .then(data => {
+            clients = data;
+            loadClients(clients);
+        })
         .catch(error => console.error("Ошибка загрузки данных:", error));
 });
 
 // Функция для отображения клиентов в таблице
 function loadClients(clients) {
     const tableBody = document.querySelector("#clientsTable tbody");
+    tableBody.innerHTML = ""; // Очистка таблицы
 
-    // Очищаем таблицу перед загрузкой
-    tableBody.innerHTML = "";
-
-    // Добавляем строки с данными клиентов
     clients.forEach(client => {
         const row = `
             <tr>
@@ -26,9 +27,26 @@ function loadClients(clients) {
         tableBody.innerHTML += row;
     });
 }
-document.querySelector("#refreshButton").addEventListener("click", () => {
-    fetch("data/clients.json")
-        .then(response => response.json())
-        .then(data => loadClients(data))
-        .catch(error => console.error("Ошибка загрузки данных:", error));
+
+// Обработчик формы для добавления клиентов
+document.querySelector("#clientForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Получаем значения из формы
+    const name = document.querySelector("#clientName").value;
+    const phone = document.querySelector("#clientPhone").value;
+    const email = document.querySelector("#clientEmail").value;
+
+    // Генерируем новый ID
+    const newId = clients.length > 0 ? clients[clients.length - 1].id + 1 : 1;
+
+    // Создаем новый объект клиента
+    const newClient = { id: newId, name, phone, email };
+
+    // Добавляем клиента в массив и обновляем таблицу
+    clients.push(newClient);
+    loadClients(clients);
+
+    // Очищаем форму
+    e.target.reset();
 });

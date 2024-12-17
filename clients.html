@@ -9,7 +9,25 @@
 <body>
     <div class="container mt-5">
         <h2>Управление клиентами</h2>
-        <table class="table table-striped mt-3" id="clientsTable">
+    
+        <!-- Форма добавления клиента -->
+        <form id="clientForm" class="row g-3 mb-4">
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="clientName" placeholder="Имя" required>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="clientPhone" placeholder="Телефон" required>
+            </div>
+            <div class="col-md-3">
+                <input type="email" class="form-control" id="clientEmail" placeholder="Email" required>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success w-100">Добавить клиента</button>
+            </div>
+        </form>
+    
+        <!-- Таблица клиентов -->
+        <table class="table table-striped" id="clientsTable">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -23,6 +41,7 @@
             </tbody>
         </table>
     </div>
+    
     <button class="btn btn-primary mb-3" id="refreshButton">Обновить список</button>
 
     <script src="js/main.js"></script>
