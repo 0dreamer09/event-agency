@@ -35,7 +35,10 @@ function loadClients(clients) {
         `;
         tableBody.innerHTML += row;
     });
+
+    console.log("Таблица обновлена:", clients); // Отладка
 }
+
 
 // Обработчик формы добавления клиента
 document.querySelector("#clientForm").addEventListener("submit", (e) => {
