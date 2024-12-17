@@ -1,13 +1,17 @@
 let clients = []; // Глобальный массив для клиентов
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Загружаем данные из clients.json
     fetch("data/clients.json")
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) throw new Error("Ошибка загрузки JSON");
+            return response.json();
+        })
         .then(data => {
             clients = data;
             loadClients(clients);
         })
-        .catch(error => console.error("Ошибка загрузки данных:", error));
+        .catch(error => console.error("Ошибка:", error));
 });
 
 // Функция для отображения клиентов в таблице
@@ -28,25 +32,33 @@ function loadClients(clients) {
     });
 }
 
-// Обработчик формы для добавления клиентов
+// Обработчик формы добавления клиента
 document.querySelector("#clientForm").addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // Получаем значения из формы
-    const name = document.querySelector("#clientName").value;
-    const phone = document.querySelector("#clientPhone").value;
-    const email = document.querySelector("#clientEmail").value;
+    // Считываем значения из формы
+    const name = document.querySelector("#clientName").value.trim();
+    const phone = document.querySelector("#clientPhone").value.trim();
+    const email = document.querySelector("#clientEmail").value.trim();
 
-    // Генерируем новый ID
-    const newId = clients.length > 0 ? clients[clients.length - 1].id + 1 : 1;
+    if (name && phone && email) {
+        // Генерируем новый ID
+        const newId = clients.length > 0 ? clients[clients.length - 1].id + 1 : 1;
 
-    // Создаем новый объект клиента
-    const newClient = { id: newId, name, phone, email };
+        // Создаем объект нового клиента
+        const newClient = { id: newId, name, phone, email };
 
-    // Добавляем клиента в массив и обновляем таблицу
-    clients.push(newClient);
-    loadClients(clients);
+        // Добавляем клиента в массив
+        clients.push(newClient);
 
-    // Очищаем форму
-    e.target.reset();
+        // Обновляем таблицу
+        loadClients(clients);
+
+        // Очищаем форму
+        e.target.reset();
+
+        console.log("Новый клиент добавлен:", newClient);
+    } else {
+        console.error("Все поля формы должны быть заполнены.");
+    }
 });
