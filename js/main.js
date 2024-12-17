@@ -37,7 +37,6 @@ function loadClients(clients) {
     });
 }
 
-
 // Обработчик формы добавления клиента
 document.querySelector("#clientForm").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -69,6 +68,7 @@ document.querySelector("#clientForm").addEventListener("submit", (e) => {
     }
 });
 
+// Функция удаления клиента
 function deleteClient(id) {
     // Находим индекс клиента с указанным ID
     const index = clients.findIndex(client => client.id === id);
@@ -83,4 +83,3 @@ function deleteClient(id) {
         console.error(`Клиент с ID ${id} не найден.`);
     }
 }
-
