@@ -26,11 +26,17 @@ function loadClients(clients) {
                 <td>${client.name}</td>
                 <td>${client.phone}</td>
                 <td>${client.email}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteClient(${client.id})">
+                        Удалить
+                    </button>
+                </td>
             </tr>
         `;
         tableBody.innerHTML += row;
     });
 }
+
 
 // Обработчик формы добавления клиента
 document.querySelector("#clientForm").addEventListener("submit", (e) => {
@@ -62,3 +68,19 @@ document.querySelector("#clientForm").addEventListener("submit", (e) => {
         console.error("Все поля формы должны быть заполнены.");
     }
 });
+
+function deleteClient(id) {
+    // Находим индекс клиента с указанным ID
+    const index = clients.findIndex(client => client.id === id);
+    if (index !== -1) {
+        // Удаляем клиента из массива
+        clients.splice(index, 1);
+        console.log(`Клиент с ID ${id} удален.`);
+
+        // Обновляем таблицу
+        loadClients(clients);
+    } else {
+        console.error(`Клиент с ID ${id} не найден.`);
+    }
+}
+
