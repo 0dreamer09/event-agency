@@ -1,17 +1,26 @@
 let clients = []; // Глобальный массив для клиентов
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Загружаем данные из clients.json
-    fetch("data/clients.json")
-        .then(response => {
-            if (!response.ok) throw new Error("Ошибка загрузки JSON");
-            return response.json();
-        })
-        .then(data => {
-            clients = data;
-            loadClients(clients);
-        })
-        .catch(error => console.error("Ошибка:", error));
+    // Загружаем данные из LocalStorage или JSON
+    const savedClients = localStorage.getItem("clients");
+    if (savedClients) {
+        clients = JSON.parse(savedClients); // Загружаем из LocalStorage
+        console.log("Данные загружены из LocalStorage.");
+    } else {
+        // Загружаем из файла JSON при первом запуске
+        fetch("data/clients.json")
+            .then(response => {
+                if (!response.ok) throw new Error("Ошибка загрузки JSON");
+                return response.json();
+            })
+            .then(data => {
+                clients = data;
+                saveToLocalStorage();
+                console.log("Данные загружены из JSON.");
+            })
+            .catch(error => console.error("Ошибка:", error));
+    }
+    loadClients(clients); // Обновляем таблицу
 });
 
 // Функция для отображения клиентов в таблице
@@ -35,10 +44,7 @@ function loadClients(clients) {
         `;
         tableBody.innerHTML += row;
     });
-
-    console.log("Таблица обновлена:", clients); // Отладка
 }
-
 
 // Обработчик формы добавления клиента
 document.querySelector("#clientForm").addEventListener("submit", (e) => {
@@ -59,6 +65,9 @@ document.querySelector("#clientForm").addEventListener("submit", (e) => {
         // Добавляем клиента в массив
         clients.push(newClient);
 
+        // Сохраняем в LocalStorage
+        saveToLocalStorage();
+
         // Обновляем таблицу
         loadClients(clients);
 
@@ -78,11 +87,21 @@ function deleteClient(id) {
     if (index !== -1) {
         // Удаляем клиента из массива
         clients.splice(index, 1);
-        console.log(`Клиент с ID ${id} удален.`);
+
+        // Сохраняем в LocalStorage
+        saveToLocalStorage();
 
         // Обновляем таблицу
         loadClients(clients);
+
+        console.log(`Клиент с ID ${id} удален.`);
     } else {
         console.error(`Клиент с ID ${id} не найден.`);
     }
+}
+
+// Функция сохранения данных в LocalStorage
+function saveToLocalStorage() {
+    localStorage.setItem("clients", JSON.stringify(clients));
+    console.log("Данные сохранены в LocalStorage.");
 }
